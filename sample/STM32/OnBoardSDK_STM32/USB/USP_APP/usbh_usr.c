@@ -2,21 +2,6 @@
 #include "ff.h" 
 #include "usart.h"
 #include "exfuns.h"
-//////////////////////////////////////////////////////////////////////////////////	 
-//本程序只供学习使用，未经作者许可，不得用于其它任何用途
-//ALIENTEK STM32F407开发板
-//USBH-USR 代码	   
-//正点原子@ALIENTEK
-//技术论坛:www.openedv.com
-//创建日期:2014/7/22
-//版本：V1.0
-//版权所有，盗版必究。
-//Copyright(C) 广州市星翼电子科技有限公司 2009-2019
-//All rights reserved									  
-//*******************************************************************************
-//修改信息
-//无
-////////////////////////////////////////////////////////////////////////////////// 	   
 
 extern u8 AppState;
 extern USB_OTG_CORE_HANDLE  USB_OTG_Core;
@@ -55,23 +40,23 @@ USBH_Usr_cb_TypeDef USR_Callbacks=
 //USB HOST 初始化 
 void USBH_USR_Init(void)
 {
-	printf("USB OTG HS MSC Host\r\n");
-	printf("> USB Host library started.\r\n");
-	printf("  USB Host Library v2.1.0\r\n\r\n");
+	ZKRT_LOG(LOG_NOTICE,"USB OTG HS MSC Host\r\n");
+	ZKRT_LOG(LOG_NOTICE,"> USB Host library started.\r\n");
+	ZKRT_LOG(LOG_NOTICE,"  USB Host Library v2.1.0\r\n\r\n");
 	
 }
 //检测到U盘插入
 void USBH_USR_DeviceAttached(void)//U盘插入
 {
 //	LED1=1;
-	printf("检测到USB设备插入!\r\n");
+	ZKRT_LOG(LOG_NOTICE,"检测到USB设备插入!\r\n");
 	f_mount(fs[2],"2:",1); 	//挂载U盘 //add by yanly
 }
 //检测到U盘拔出
 void USBH_USR_DeviceDisconnected (void)//U盘移除
 {
 //	LED1=0;
-	printf("USB设备拔出!\r\n");
+	ZKRT_LOG(LOG_NOTICE,"USB设备拔出!\r\n");
 	//add by yanly 重新挂载
 	f_mount(NULL,"2:",1); 	//卸载
 //	f_mount(fs[2],"2:",1); 	//挂载U盘
@@ -79,7 +64,7 @@ void USBH_USR_DeviceDisconnected (void)//U盘移除
 //复位从机
 void USBH_USR_ResetDevice(void)
 {
-	printf("复位设备...\r\n");
+	ZKRT_LOG(LOG_NOTICE,"复位设备...\r\n");
 }
 //检测到从机速度
 //DeviceSpeed:从机速度(0,1,2 / 其他)
@@ -87,19 +72,19 @@ void USBH_USR_DeviceSpeedDetected(uint8_t DeviceSpeed)
 {
 	if(DeviceSpeed==HPRT0_PRTSPD_HIGH_SPEED)
 	{
-		printf("高速(HS)USB设备!\r\n");
+		ZKRT_LOG(LOG_NOTICE,"高速(HS)USB设备!\r\n");
  	}  
 	else if(DeviceSpeed==HPRT0_PRTSPD_FULL_SPEED)
 	{
-		printf("全速(FS)USB设备!\r\n"); 
+		ZKRT_LOG(LOG_NOTICE,"全速(FS)USB设备!\r\n"); 
 	}
 	else if(DeviceSpeed==HPRT0_PRTSPD_LOW_SPEED)
 	{
-		printf("低速(LS)USB设备!\r\n");  
+		ZKRT_LOG(LOG_NOTICE,"低速(LS)USB设备!\r\n");  
 	}
 	else
 	{
-		printf("设备错误!\r\n");  
+		ZKRT_LOG(LOG_ERROR,"设备错误!\r\n");  
 	}
 }
 //检测到从机的描述符
@@ -108,13 +93,13 @@ void USBH_USR_Device_DescAvailable(void *DeviceDesc)
 { 
 	USBH_DevDesc_TypeDef *hs;
 	hs=DeviceDesc;   
-	printf("VID: %04Xh\r\n" , (uint32_t)(*hs).idVendor); 
-	printf("PID: %04Xh\r\n" , (uint32_t)(*hs).idProduct); 
+	ZKRT_LOG(LOG_NOTICE,"VID: %04Xh\r\n" , (uint32_t)(*hs).idVendor); 
+	ZKRT_LOG(LOG_NOTICE,"PID: %04Xh\r\n" , (uint32_t)(*hs).idProduct); 
 }
 //从机地址分配成功
 void USBH_USR_DeviceAddressAssigned(void)
 {
-	printf("从机地址分配成功!\r\n");   
+	ZKRT_LOG(LOG_NOTICE,"从机地址分配成功!\r\n");   
 }
 //配置描述符获有效
 void USBH_USR_Configuration_DescAvailable(USBH_CfgDesc_TypeDef * cfgDesc,
@@ -125,47 +110,47 @@ void USBH_USR_Configuration_DescAvailable(USBH_CfgDesc_TypeDef * cfgDesc,
 	id = itfDesc;   
 	if((*id).bInterfaceClass==MSC_CLASS)
 	{
-		printf("可移动存储器设备!\r\n"); 
+		ZKRT_LOG(LOG_NOTICE,"可移动存储器设备!\r\n"); 
 	}else if((*id).bInterfaceClass==HID_CLASS)
 	{
-		printf("HID 设备!\r\n"); 
+		ZKRT_LOG(LOG_NOTICE,"HID 设备!\r\n"); 
 	}    
 //获取到设备Manufacturer String
 }
 void USBH_USR_Manufacturer_String(void *ManufacturerString)
 {
-	printf("Manufacturer: %s\r\n",(char *)ManufacturerString);
+	ZKRT_LOG(LOG_NOTICE,"Manufacturer: %s\r\n",(char *)ManufacturerString);
 }
 //获取到设备Product String 
 void USBH_USR_Product_String(void *ProductString)
 {
-	printf("Product: %s\r\n",(char *)ProductString);  
+	ZKRT_LOG(LOG_NOTICE,"Product: %s\r\n",(char *)ProductString);  
 }
 //获取到设备SerialNum String 
 void USBH_USR_SerialNum_String(void *SerialNumString)
 {
-	printf("Serial Number: %s\r\n",(char *)SerialNumString);    
+	ZKRT_LOG(LOG_NOTICE,"Serial Number: %s\r\n",(char *)SerialNumString);    
 } 
 //设备USB枚举完成
 void USBH_USR_EnumerationDone(void)
 { 
-	printf("设备枚举完成!\r\n\r\n");    
+	ZKRT_LOG(LOG_NOTICE,"设备枚举完成!\r\n\r\n");    
 } 
 //无法识别的USB设备
 void USBH_USR_DeviceNotSupported(void)
 {
-	printf("无法识别的USB设备!\r\n\r\n");    
+	ZKRT_LOG(LOG_NOTICE,"无法识别的USB设备!\r\n\r\n");    
 }  
 //等待用户输入按键,执行下一步操作
 USBH_USR_Status USBH_USR_UserInput(void)
 { 
-	printf("跳过用户确认步骤!\r\n");
+	ZKRT_LOG(LOG_NOTICE,"跳过用户确认步骤!\r\n");
 	return USBH_USR_RESP_OK;
 } 
 //USB接口电流过载
 void USBH_USR_OverCurrentDetected (void)
 {
-	printf("端口电流过大!!!\r\n");
+	ZKRT_LOG(LOG_NOTICE,"端口电流过大!!!\r\n");
 } 
 
 extern u8 USH_User_App(void);		//用户测试主程序
@@ -189,7 +174,7 @@ void USBH_USR_DeInit(void)
 //无法恢复的错误!!  
 void USBH_USR_UnrecoveredError (void)
 {
-	printf("无法恢复的错误!!!\r\n\r\n");	
+	ZKRT_LOG(LOG_NOTICE,"无法恢复的错误!!!\r\n\r\n");	
 }
 ////////////////////////////////////////////////////////////////////////////////////////
 //用户定义函数,实现fatfs diskio的接口函数 

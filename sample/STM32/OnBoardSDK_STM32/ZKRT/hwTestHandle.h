@@ -58,10 +58,13 @@
 #define SET_CMDT_HWT                     0x01							 
 #define RESPOND_CMDT_HWT                 0x02
 //test result
-#define RESULT_OK_HWT                    0x00
-#define RESULT_FAIL_HWT                  0xff
-#define RESULT_UNCONFIRM_HWT             0x01
+#define RESULT_OK_HWT                    0x55
+#define RESULT_FAIL_HWT                  0xAA
+#define RESULT_UNCONFIRM_HWT             0xCC
+#define RESULT_FAIL_SUBM_TIMEOUT_HWT     0xFF
 
+//dev name
+#define MAINBOARD_NAME                   "Controller"  //the name length must < 16 bytes
 /**
   * @}
   */ 

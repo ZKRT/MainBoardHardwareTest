@@ -336,7 +336,7 @@ void zkrt_read_heart_tempture(void)
 #elif defined _TEMPTURE_ADC_
 	tempture0 = ADC1_get_value(_T1_value);								
 	tempture1 = ADC1_get_value(_T1_value);	
-	   printf("tempture0= %d   tempture1= %d!\r\n",tempture0,tempture1);
+	ZKRT_LOG(LOG_NOTICE,"tempture0= %d   tempture1= %d!\r\n",tempture0,tempture1);
 #endif
 }
 

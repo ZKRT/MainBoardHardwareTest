@@ -1,25 +1,3 @@
-/*! @file main.cpp
- *  @version 3.1.8
- *  @date Aug 05 2016
- *
- *  @brief
- *  An exmaple program of DJI-onboard-SDK portable for stm32
- *
- *  Copyright 2016 DJI. All right reserved.
- *
- *******************************************************************************
- *                                                                             *
- *          --------               --------                 --------           *
- *         |        |   USART2    |        |    USART3     |        |          *
- *         |   PC   | <---------> | stm32  |  <----------> |  M100  |          *
- *         |        | (USB-TTL)   |        |               |        |          *
- *         |        |             |        |               |        |          *
- *          --------               --------                 --------           *
- *                                                                             *
- *                                                                             *
- *******************************************************************************
- * */
-
 #include "main.h"
 #include "stm32f4xx_adc.h"
 #include "DJI_API.h"
@@ -44,6 +22,7 @@ extern "C"
 #include "lwipapp.h"
 #include "usb_usr_process.h"
 #include "hwTestHandle.h"
+#include "versionzkrt.h"
 }
 #endif //__cplusplus
 
@@ -78,7 +57,7 @@ extern uint8_t myFreq[16];
 //uint8_t j=0;
 //uint8_t djidataformmobile[50]= {0};
 uint8_t data[50]= {0};
-uint8_t s=0;
+uint8_t tempture_invalid=0; //两个温度值是否有效，无效为1，有效为0
 
 uint8_t msgbuffer[25] = {0x77,0x77,0x77,0x77,0x77,0x77,0x77,0x77,0x77,0x77,0x77,0x77,0x77,0x77,0x77,0x77,0x77,0x77,0x77,0x77,0x77,0x77,0x77,0x77,0x77};
 
@@ -90,7 +69,6 @@ extern "C" void ADC_SoftwareStartConv(ADC_TypeDef* ADCx);
 void dji_init(void);
 void dji_process(void);
 
-	
 /***********************************************************************
 		          中科瑞泰消防无人机函数定义
 
@@ -101,68 +79,46 @@ void dji_process(void);
 		说     明：
 
 ************************************************************************/
-
 extern "C" void sendToMobile(uint8_t *data, uint8_t len)
 {
   coreApi->sendToMobile(data,  len);//数据透传到地面站软件
   GPIO_ResetBits(GPIOD, GPIO_Pin_0);
   usart1_tx_flag = TimingDelay;
 }
-
 extern "C" void sendpoll()
 {
   coreApi->sendPoll();//
 }
-u8 q_task_2s_flag;
-u8 task_2s_flag;
-u8 test_adc;
-void app_2s_task(void)
+#ifdef HWTEST_FUN
+u8 sys_led_timeout = RUN_LEN_NETINIT_NONE_TIMEOUT;
+volatile u8 sys_led_flag = 0;
+void app_500ms_task(void)
 {
-	task_2s_flag = 1;
-	test_adc = ! test_adc;
+	if(sys_led_flag>1)
+	{
+		sys_led_flag--;
+	}
 }
-void app_2s_qtask(void)
-{
-	q_task_2s_flag++;
-}	
+#endif
+
 int main()
 {
 	BSPinit();
+	ZKRT_LOG(LOG_NOTICE, "==================================================\r\n"); 
+	printf("PRODUCT_NAME: %s\r\nPRODUCT_ID: %s\r\nPRODUCT_VERSION: %s\r\nPRODUCT_TIME: %s %s\r\n",PRODUCT_NAME,PRODUCT_ID,PRODUCT_VERSION,__DATE__,__TIME__);
+	ZKRT_LOG(LOG_NOTICE, "==================================================\r\n"); 
 	hwtest_init();
 	lwip_prcs_init();
-	t_ostmr_insertTask(app_2s_task, 1000, OSTMR_PERIODIC);
-	t_systmr_insertQuickTask(app_2s_qtask, 500, OSTMR_PERIODIC);
-	ADC_SoftwareStartConv(ADC1); //启动ADC
-//	led_test();
+#ifdef HWTEST_FUN	
+	t_ostmr_insertTask(app_500ms_task, 500, OSTMR_PERIODIC);
+#endif	
 	while(1)
 	{
-		if(q_task_2s_flag>=2)
-		{
-			q_task_2s_flag = 0;
-//			PFout(10) = ! PFout(10);
-		}	
-		if(task_2s_flag)
-		{
-			task_2s_flag = 0;
-//			PFout(9) = ! PFout(9);
-//			printf("hello\n");
-//			printf("adc: %d\n", test_adc);
-//			ADC_SoftwareStartConv(ADC1); //启动ADC
-//			ADC1_get_value(test_adc);
-			
-			//ds18b20 test
-//			tempture0 = DS18B20_Get_Temp(DS18B20_NUM1);									
-//			tempture1 = DS18B20_Get_Temp(DS18B20_NUM2);
-//			printf("DS18B20_NUM1 tempture=%d\n", tempture0);
-//			printf("DS18B20_NUM2 tempture=%d\n", tempture1);
-			
-//			usart1_tx_send_msg((uint8_t *)"hello world", sizeof("hello world"));
-		}
 		lwip_prcs();
 		usb_user_prcs();
 	}
-//	led_test();
-}	
+}
+
 //int main()
 //{
 //  BSPinit();
@@ -295,12 +251,12 @@ int main()
 ////////串口1 LED灯管理
 //    if ((usart1_tx_flag-TimingDelay) >= 50)
 //    {
-//      _DJI_UART_TX_LED = LED_DARK;
+//      _FLIGHT_UART_TX_LED = LED_DARK;
 //    }
 
 //    if ((usart1_rx_flag-TimingDelay) >= 50)
 //    {
-//      _DJI_UART_RX_LED = LED_DARK;
+//      _FLIGHT_UART_RX_LED = LED_DARK;
 //    }
 ////////
 //    IWDG_Feed();
@@ -528,56 +484,176 @@ int main()
 //  }
 //}
 
-/*
-* @brief: DJI init. 放在硬件初始化完成之后
-*/
-void dji_init()
-{
-  printf("This is the example App to test DJI onboard SDK on STM32F4Discovery Board! \r\n");
-  printf("Refer to \r\n");
-  printf("https://developer.dji.com/onboard-sdk/documentation/github-platform-docs/STM32/README.html \r\n");
-  printf("for supported commands!\r\n");
-  printf("Board Initialization Done!\r\n");
-  //! Change the version string to your platform/version as defined in DJI_Version.h
-  coreApi->setVersion(versionA3_31);
-  delay_nms(200);
-  printf("API Version Set Done!\r\n");	
-}
-/*
-* @brief: DJI process.
-*/
-void dji_process()
-{
-	// One time automatic activation
-	if(runOnce)
-	{
-		runOnce = 0;
-		coreApi->setBroadcastFreq(myFreq);
-		delay_nms(50);
+///**
+//  * @brief  DJI init. 放在硬件初始化完成之后
+//  * @param  None
+//  * @retval None
+//  */
+//void dji_init()
+//{
+//  ZKRT_LOG(LOG_NOTICE,"This is the example App to test DJI onboard SDK on STM32F4Discovery Board! \r\n");
+//  ZKRT_LOG(LOG_NOTICE,"Refer to \r\n");
+//  ZKRT_LOG(LOG_NOTICE,"https://developer.dji.com/onboard-sdk/documentation/github-platform-docs/STM32/README.html \r\n");
+//  ZKRT_LOG(LOG_NOTICE,"for supported commands!\r\n");
+//  ZKRT_LOG(LOG_NOTICE,"Board Initialization Done!\r\n");
+//  //! Change the version string to your platform/version as defined in DJI_Version.h
+//  coreApi->setVersion(versionA3_31);
+//  delay_nms(200);
+//  ZKRT_LOG(LOG_NOTICE,"API Version Set Done!\r\n");	
+//}
+///**
+//  * @brief  dji_process. 
+//  * @param  None
+//  * @retval None
+//  */
+//void dji_process()
+//{
+//	// One time automatic activation
+//	if(runOnce)
+//	{
+//		runOnce = 0;
+//		coreApi->setBroadcastFreq(myFreq);
+//		delay_nms(50);
 
-		// The Local navigation example will run in broadcast call back function,
-		// immediate after GPS position is updated
-		coreApi->setBroadcastCallback(myRecvCallback,(DJI::UserData)(&droneState));
+//		// The Local navigation example will run in broadcast call back function,
+//		// immediate after GPS position is updated
+//		coreApi->setBroadcastCallback(myRecvCallback,(DJI::UserData)(&droneState));
 
-		User_Activate();
-		delay_nms(50);
+//		User_Activate();
+//		delay_nms(50);
 
-		next500MilTick = driver->getTimeStamp() + 500;
-	}
+//		next500MilTick = driver->getTimeStamp() + 500;
+//	}
 
-	//   virtualrc.sendData(myVRCdata);
-	// virtualrc.setControl(0,virtualrc.CutOff_ToLogic);
+//	//   virtualrc.sendData(myVRCdata);
+//	// virtualrc.setControl(0,virtualrc.CutOff_ToLogic);
 
-	if(driver->getTimeStamp() >= next500MilTick) 		//暂时不会跑到这里，dji用的定时器没有初始化。	//note by yanly 
-	{
-		next500MilTick = driver->getTimeStamp() + 500;
+//	if(driver->getTimeStamp() >= next500MilTick) 		//暂时不会跑到这里，dji用的定时器没有初始化。	//note by yanly 
+//	{
+//		next500MilTick = driver->getTimeStamp() + 500;
 
-		// Handle user commands from mobile device
-		mobileCommandHandler(coreApi, &flight);
+//		// Handle user commands from mobile device
+//		mobileCommandHandler(coreApi, &flight);
 
-		// Handle user commands from serial (USART2)
-		//   myTerminal.terminalCommandHandler(coreApi, &flight);
-	}
-	
-	coreApi->sendPoll();	
-}
+//		// Handle user commands from serial (USART2)
+//		//   myTerminal.terminalCommandHandler(coreApi, &flight);
+//	}
+//	
+//	coreApi->sendPoll();	
+//}
+///**
+//  * @brief  tempture_flight_control. 温度控制飞行+温度信息组包到心跳包里
+//  * @param  None
+//  * @retval None
+//  */
+//void tempture_flight_control(void)
+//{
+//	if (_160_read_flag - TimingDelay >= 160)
+//	{
+//		_160_read_flag = TimingDelay;
+//		ADC_SoftwareStartConv(ADC1); /*启动ADC*/	
+////		ZKRT_LOG(LOG_NOTICE, "ADC_SoftwareStartConv!\r\n");	
+//		if((_read_count%2) == 0)									
+//		{
+//			zkrt_dji_read_heart_tempture();  /*获取温度传感器数据*/
+//			if(((tempture0>0)||(tempture1>0))&&(tempture_invalid==0))
+//			{
+//				virtualrc.setControl(1,virtualrc.CutOff_ToRealRC);
+//				myVRCdata=virtualrc.getVRCData();
+//				myVRCdata.throttle=1500;
+//				virtualrc.sendData(myVRCdata);
+//			}
+//			if((tempture0<0)&&(tempture1<0))
+//			{
+//				tempture_invalid=1;				
+//			}
+//			if (MAVLINK_TX_INIT_VAL - TimingDelay >= 4000)	
+//			{					
+//				dji_zkrt_read_heart_tempture_check();	/*将温度传感器数据填充到心跳包里面，并判断数据是否正常*/	
+//			}
+//		}
+//		if ((_read_count%10) == 0)								
+//		{
+//			dji_bat_value_roll(); /*获取智能电池数据，并填充到智能电池数据数组中*/
+//			dji_zkrt_read_heart_vol(); /*获取板载电压电流值*/
+
+//			if (MAVLINK_TX_INIT_VAL - TimingDelay >= 4000)	
+//			{
+//				dji_zkrt_read_heart_vol_check();	/*对当前板载电压电流值进行判断，并作出相应操作，将结果填充到心跳包*/					
+//			}
+//		}
+//		_read_count++;
+//	}	
+//}
+///**
+//  * @brief  mobile_heardbeat_packet_control. 板子与地面站（手机）心跳包处理（定时发送）
+//  * @param  None
+//  * @retval None
+//  */
+//void mobile_heardbeat_packet_control(void)
+//{
+//	if (MAVLINK_TX_INIT_VAL - TimingDelay >= 5000)  //5s延时到之后一直处理以下逻辑
+//	{
+//		if ((mavlink_send_flag-TimingDelay) >= 800)
+//		{
+//			mavlink_send_flag = TimingDelay;
+//			#if 1
+//			switch (mavlink_type_flag_dji)
+//			{
+//				case 0:
+//					mavlink_type_flag_dji = 1;
+//					dji_zkrt_read_heart_ack(); /*完成最终的数据包，并且发送出处*/
+//					coreApi->sendPoll();
+//					break;
+//				case 1:
+//					mavlink_type_flag_dji = 0;
+//				//dji_bat_value_send();  /*发送智能电池数据，总共32个字节*/    //????为什么没有封装zkrt packet格式 //modify by yanly
+//					coreApi->sendPoll();
+//					break;
+//				default:
+//					break;
+//			}
+//			#endif
+////			printf("T1 = %d T2 = %d  ADC1_25_dji=%d  ADC1_5_dji=%d  ADC1_I_dji=%d   LOW_VALUE = %d HIGH_VALUE = %d STA1 = %x STA2 = %x\r\n",
+////			tempture0, tempture1, ADC1_25_dji,ADC1_5_dji,ADC1_I_dji,glo_tempture_low, glo_tempture_high, msg_smartbat_dji_buffer[0],
+////			msg_smartbat_dji_buffer[3]);
+//		}
+//	}	
+//}
+///**
+//  * @brief  product_main. 正式产品主函数
+//  * @param  None
+//  * @retval None
+//  */
+//int product_main()
+//{
+//  BSPinit();
+////  delay_nms(20000);
+//	ZKRT_LOG(LOG_NOTICE, "==================================================\r\n"); 
+//	printf("PRODUCT_NAME: %s\r\nPRODUCT_ID: %s\r\nPRODUCT_VERSION: %s\r\nPRODUCT_TIME: %s %s\r\n",PRODUCT_NAME,PRODUCT_ID,PRODUCT_VERSION,__DATE__,__TIME__);
+//	ZKRT_LOG(LOG_NOTICE, "==================================================\r\n"); 
+//#ifdef USE_DJI_FUN	
+//	dji_init();
+//#endif
+//#ifdef USE_LWIP_FUN	
+//	lwip_prcs_init();
+//#endif	
+//  while (1)
+//  {
+//#ifdef USE_DJI_FUN			
+//		dji_process();                        //大疆SDK处理
+//#endif		
+//		mobile_data_process();                //将接收到的mobile透传数据进行解析处理
+//    main_zkrt_dji_recv();		              //从子模块通过CAN接收数据，将毒气、抛投数据填充到心跳包，并且相关位置一
+//		tempture_flight_control();            //温度超过上下限启动逃逸功能
+//		mobile_heardbeat_packet_control();    //板子定时发送心跳包到地面站
+//		led_process();                        //LED控制
+//#ifdef USE_LWIP_FUN			
+//		lwip_prcs();													//网络流程
+//#endif
+//#ifdef USE_USB_FUN			
+//		usb_user_prcs();                      //USB流程
+//#endif    
+//		IWDG_Feed();
+//  }
+//}

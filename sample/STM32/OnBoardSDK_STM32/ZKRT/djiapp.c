@@ -326,7 +326,7 @@ void zkrt_dji_read_heart_tempture(void)
 #elif defined _TEMPTURE_ADC_
   tempture0 = ADC1_get_value(_T1_value);
   tempture1 = ADC1_get_value(_T1_value);
-  printf("#######tempture0= %d   tempture1= %d!\r\n",tempture0,tempture1);
+  ZKRT_LOG(LOG_NOTICE,"#######tempture0= %d   tempture1= %d!\r\n",tempture0,tempture1);
 #endif
 }
 /***********************************************************************
@@ -620,6 +620,6 @@ void dji_zkrt_read_heart_ack(void)
 
   zkrt_final_encode(&packet);
 	
-  printf("sendpoll()$$$$$$$$!\r\n");
+  ZKRT_LOG(LOG_NOTICE,"sendpoll()$$$$$$$$!\r\n");
   sendToMobile((uint8_t*)&packet,50);
 }

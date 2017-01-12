@@ -28,7 +28,7 @@
 /* Exported constants --------------------------------------------------------*/ 
 
 #define TCP_SERVER_RX_BUFSIZE	200		//定义tcp server最大接收数据长度
-#define TCP_SERVER_PORT			8088	//定义tcp server的端口
+#define TCP_SERVER_PORT			15010	//定义tcp server的端口
 
 /* Exported types ------------------------------------------------------------*/
 
@@ -77,7 +77,9 @@ void tcp_server_remove_timewait(void);
 void tcp_server_para_init(void);
 void tcp_server_prcs(void);
 err_t tcp_server_send(struct tcp_pcb *tpcb, void *user_arg, u8 *sendbuf, u16 buf_len);
-
+#ifdef HWTEST_FUN				
+void tcp_server_hwt_led_control(void);
+#endif
 //
 extern tcp_server_handle_s *tcpserver_sp;
 

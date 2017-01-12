@@ -97,7 +97,7 @@
     else                                                                  \
       printf("ERROR: log printer inner fault\n");           							\
   }
-	
+#define LOG_PRINTF_UCHAR	//开启打印16进制数
 #define LOG_NOTICE_DATA	
 #define LOG_ERROR_DATA
 #define LOG_DEBUG_DATA
@@ -130,6 +130,8 @@
 extern volatile uint32_t TimingDelay;
 extern volatile uint32_t usart1_tx_flag;
 extern volatile uint32_t usart1_rx_flag;
+extern volatile uint32_t u433m_tx_flag;		
+extern volatile uint32_t u433m_rx_flag;
 extern volatile uint32_t can_tx_flag;
 extern volatile uint32_t can_rx_flag;
 extern volatile uint32_t mavlink_send_flag;

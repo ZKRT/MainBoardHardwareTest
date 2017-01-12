@@ -17,10 +17,10 @@ void zkrt_read_tempture_ack(void)
 	tempture0 = DS18B20_Get_Temp(DS18B20_NUM1);									
 	tempture1 = DS18B20_Get_Temp(DS18B20_NUM2);
 #elif defined _TEMPTURE_ADC_
-
 	tempture0 = ADC1_get_value(_T1_value);								
 	tempture1 = ADC1_get_value(_T1_value);
-	   printf("tempture0= %d   tempture1= %d!\r\n",tempture0,tempture1);
+	ZKRT_LOG(LOG_NOTICE, "tempture0= %d   tempture1= %d!\r\n",tempture0,tempture1);
+//	   printf("tempture0= %d   tempture1= %d!\r\n",tempture0,tempture1);
 #endif
 	
 	if (tempture0 < TEMPTURE_LOW_EXTRA)
@@ -102,5 +102,3 @@ void zkrt_read_tempture_ack(void)
 	
 	mavlink_msg_statustext_send(MAVLINK_COMM_0, DEVICE_TYPE_TEMPERATURE, (const char*)(&packet));//Í¨¹ýstatus_text·¢ËÍpacket
 }
-
-

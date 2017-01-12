@@ -47,6 +47,9 @@
 /* Private define ------------------------------------------------------------*/ 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+#ifndef USE_LED_FUN
+char led_none;
+#endif
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
@@ -143,41 +146,93 @@ void led_test(void)
 //	_RUN_LED = 1;
 //	_ALARM_LED = 1;
 //	_HS_LED = 1;
-//	_DJI_UART_TX_LED = 1;
-//	_DJI_UART_RX_LED = 1;
-//	_TEST_UART_TX_LED = 1;
-//	_TEST_UART_RX_LED = 1;
-//	_CAN1_RX_LED = 1;
-//	_CAN1_TX_LED = 1;	
+//	_FLIGHT_UART_TX_LED = 1;
+//	_FLIGHT_UART_RX_LED = 1;
+//	_433M_UART_TX_LED = 1;
+//	_433M_UART_RX_LED = 1;
+//	_CAN_RX_LED = 1;
+//	_CAN_TX_LED = 1;	
 //all low
 //	_RUN_LED = 0;
 //	_ALARM_LED = 0;
 //	_HS_LED = 0;
-//	_DJI_UART_TX_LED = 0;
-//	_DJI_UART_RX_LED = 0;
-//	_TEST_UART_TX_LED = 0;
-//	_TEST_UART_RX_LED = 0;
-//	_CAN1_RX_LED = 0;
-//	_CAN1_TX_LED = 0;	
-	while(i<20)
+//	_FLIGHT_UART_TX_LED = 0;
+//	_FLIGHT_UART_RX_LED = 0;
+//	_433M_UART_TX_LED = 0;
+//	_433M_UART_RX_LED = 0;
+//	_CAN_RX_LED = 0;
+//	_CAN_TX_LED = 0;	
+	while(i<30)
 	{
-			i++;
+		i++;
 		delay_ms(500);
-//		_RUN_LED = !_RUN_LED;
-//		_ALARM_LED = !_ALARM_LED;
-//		_HS_LED = !_HS_LED;
-//		_DJI_UART_TX_LED = !_DJI_UART_TX_LED;
-//		_DJI_UART_RX_LED = !_DJI_UART_RX_LED;
-//		_TEST_UART_TX_LED = !_TEST_UART_TX_LED;
-//		_TEST_UART_RX_LED = !_TEST_UART_RX_LED;
-//		_CAN1_RX_LED  =!_CAN1_RX_LED;
-//		_CAN1_TX_LED = !_CAN1_TX_LED;	
+		_RUN_LED = !_RUN_LED;
+		_ALARM_LED = !_ALARM_LED;
+		_HS_LED = !_HS_LED;
+		_FLIGHT_UART_TX_LED = !_FLIGHT_UART_TX_LED;
+		_FLIGHT_UART_RX_LED = !_FLIGHT_UART_RX_LED;
+		_433M_UART_TX_LED = !_433M_UART_TX_LED;
+		_433M_UART_RX_LED = !_433M_UART_RX_LED;
+		_CAN_RX_LED  =!_CAN_RX_LED;
+		_CAN_TX_LED = !_CAN_TX_LED;	
 		PFout(9) = ! PFout(9);
 		PFout(10) = ! PFout(10);
 	}
 	GPIO_ResetBits(GPIOF, GPIO_Pin_10 | GPIO_Pin_9);
+	_RUN_LED = 1;
+	_ALARM_LED = 1;
+	_HS_LED = 1;
+	_FLIGHT_UART_TX_LED = 1;
+	_FLIGHT_UART_RX_LED = 1;
+	_433M_UART_TX_LED = 1;
+	_433M_UART_RX_LED = 1;
+	_CAN_RX_LED = 1;
+	_CAN_TX_LED = 1;	
 }
-
+/**
+  * @brief  led_process. led灯控制
+  * @param  None
+  * @retval None
+  */
+void led_process(void)
+{
+	//run led control
+	if ((mavlink_send_flag-TimingDelay) < 50)  //与发送心跳包共用一个标记mavlink_send_flag，在心跳包处理里置mavlink_send_flag
+	{
+		_RUN_LED = 0;
+	}
+	else if ((mavlink_send_flag-TimingDelay) < 800)
+	{
+		_RUN_LED = 1;
+	}
+	//flight led control
+	if ((usart1_tx_flag-TimingDelay) >= 50)
+	{
+		_FLIGHT_UART_TX_LED = 1;
+	}
+	if ((usart1_rx_flag-TimingDelay) >= 50)
+	{
+		_FLIGHT_UART_RX_LED = 1;
+	}
+	//can led control
+	if ((can_rx_flag-TimingDelay)  >= 50)
+	{
+		_CAN_RX_LED = 1;
+	}
+	if ((can_tx_flag-TimingDelay)  >= 50)
+	{
+		_CAN_TX_LED = 1;
+	}	
+	//433m led control
+	if ((u433m_tx_flag-TimingDelay) >= 50)
+	{
+		_433M_UART_TX_LED = 1;
+	}
+	if ((u433m_rx_flag-TimingDelay) >= 50)
+	{
+		_433M_UART_RX_LED = 1;
+	}
+}	
 /**
   * @}
   */ 

@@ -10,6 +10,7 @@
 #include "lwip/ip_frag.h"
 #include "lwip/tcpip.h" 
 #include "malloc.h"
+#include "led.h"
 //#include "delay.h"
 #include "usart.h"  
 #include <stdio.h>
@@ -217,8 +218,13 @@ void lwip_periodic_handle()
 			lwipdev.linkstatus = links_temp;
 			if(links_temp == LINK_DOWN)
 			{
-				//zkrt_todo: 网线从link up变成link down，是否要将网络状态等信息重置？
-			}	
+#ifdef HWTEST_FUN				
+//				sys_led_timeout = RUN_LEN_NETINIT_NONE_TIMEOUT;
+//				sys_led_flag = sys_led_timeout;
+				_RUN_LED = 1;
+#endif				
+				//zkrt_todo: 网线从link up变成link down，是否要将网络状态等信息重置
+			}
 		}
 	}	
 }

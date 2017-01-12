@@ -30,6 +30,9 @@
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/ 
 /* Private macro -------------------------------------------------------------*/
+//#define ADCTEMP_VENDER_1		
+#define ADCTEMP_VENDER_2
+
 /* Private variables ---------------------------------------------------------*/
 volatile uint16_t adc1_rx_buffer[ADC_BUFFER_SIZE];
 
@@ -139,7 +142,7 @@ uint16_t ADC1_get_value(uint8_t read_type)
 		sum += adc1_rx_buffer[count*(ADC_USE_CHANNEL)+read_type];
 	}
 	sum /= 10;
-	ZKRT_LOG(LOG_NOTICE, "sum= %d \r\n",sum);
+//	ZKRT_LOG(LOG_NOTICE, "sum= %d \r\n",sum);
 	switch (read_type)
 	{
 		case _25V_value:
@@ -153,7 +156,12 @@ uint16_t ADC1_get_value(uint8_t read_type)
 		break;
 		case _T1_value:
 		case _T2_value:
+#ifdef ADCTEMP_VENDER_2
+			sum=((((float)sum*(3.3/(4096))-0.6)/0.0025)-2.5)*10;
+#endif
+#ifdef ADCTEMP_VENDER_1
 			sum = sum*1650/1024; //why? yanly
+#endif		
 		break;
 		default: break;
 	}

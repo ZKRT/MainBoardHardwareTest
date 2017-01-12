@@ -31,6 +31,10 @@ void usart6_tx_copyed(const char *str,uint16_t len);
 void usart6_tx_DMA(void);
 uint8_t usart6_rx_check(void);
 uint8_t usart6_rx_byte(void);
+void uart4_tx_copyed(const char *str,uint16_t len);
+void uart4_tx_DMA(void);
+uint8_t uart4_rx_check(void);
+uint8_t uart4_rx_byte(void);
 #endif
 
 

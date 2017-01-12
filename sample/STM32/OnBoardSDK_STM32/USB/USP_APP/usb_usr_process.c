@@ -17,15 +17,15 @@ u8 USH_User_App(void)
 	switch(AppState)
 	{
 		case USH_USR_FS_INIT:
-			printf("开始执行用户程序!!!\r\n");
+			ZKRT_LOG(LOG_NOTICE,"开始执行用户程序!!!\r\n");
 		  AppState = USH_USR_FS_TEST;
-			printf("设备连接成功!.\n");	
+			ZKRT_LOG(LOG_NOTICE,"设备连接成功!.\n");	
 			res=exf_getfree((u8 *)"2:",&total,&free);
 			if(res==0)
 			{
-				printf("FATFS OK!\n");	
-				printf("U Disk Total Size:     %d MB\n", total>>10);	 
-				printf("U Disk  Free Size:     %d MB\n", free>>10); 	    
+				ZKRT_LOG(LOG_NOTICE,"FATFS OK!\n");	
+				ZKRT_LOG(LOG_NOTICE,"U Disk Total Size:     %d MB\n", total>>10);	 
+				ZKRT_LOG(LOG_NOTICE,"U Disk  Free Size:     %d MB\n", free>>10); 	    
 			} 
 			break;
 		case USH_USR_FS_TEST:

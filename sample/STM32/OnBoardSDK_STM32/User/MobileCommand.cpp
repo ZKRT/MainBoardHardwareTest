@@ -24,7 +24,7 @@ void mobileCommandHandler(CoreAPI* api, Flight* flight)
 
   if (api->getObtainControlMobileCMD())
   {
-  printf("getObtainControlMobileCMD!\r\n");
+//  printf("getObtainControlMobileCMD!\r\n");
     api->setObtainControlMobileCMD(false);
     api->setControl(1);
     delay_nms(100);
@@ -35,7 +35,7 @@ void mobileCommandHandler(CoreAPI* api, Flight* flight)
 
   if (api->getReleaseControlMobileCMD())
   {
-    printf("getReleaseControlMobileCMD!\r\n");
+//    printf("getReleaseControlMobileCMD!\r\n");
     api->setReleaseControlMobileCMD(false);
     api->setControl(0);
     delay_nms(100);
@@ -76,7 +76,7 @@ void mobileCommandHandler(CoreAPI* api, Flight* flight)
 
   if (api->getTakeOffMobileCMD())
   {
-   printf("getTakeOffMobileCMD!\r\n");
+//   printf("getTakeOffMobileCMD!\r\n");
     api->setTakeOffMobileCMD(false);
     flight->task(Flight::TASK_TAKEOFF);
     delay_nms(100);

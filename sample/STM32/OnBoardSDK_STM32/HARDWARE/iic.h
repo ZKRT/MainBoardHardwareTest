@@ -58,5 +58,20 @@ uint8_t SMBUS_WriteBattery(uint8_t *data, uint8_t len);
 void wait_keep_test(void);
 void wait_keephf_test(void);
 void scl_set_low_test(void);
+
+
+/***************************************************************/  //add by yanly from yuanzi iic 
+void IIC_Start(void);				//发送IIC开始信号
+void IIC_Stop(void);	  			//发送IIC停止信号
+void IIC_Send_Byte(u8 txd);			//IIC发送一个字节
+u8 IIC_Read_Byte(unsigned char ack);//IIC读取一个字节
+u8 IIC_Wait_Ack(void); 				//IIC等待ACK信号
+void IIC_Ack(void);					//IIC发送ACK信号
+void IIC_NAck(void);				//IIC不发送ACK信号
+
+void IIC_Write_One_Byte(u8 daddr,u8 addr,u8 data);
+u8 IIC_Read_One_Byte(u8 daddr,u8 addr);	  
+/***************************************************************/
+
 #endif
 

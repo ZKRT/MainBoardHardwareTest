@@ -101,7 +101,6 @@ void STMFLASH_Init(void)
 //²Á³ýÄ³¸öÉÈÇø
 void STMFLASH_Erase(short sector)	
 {
-	uint8_t i = 0;
   FLASH_Status status = FLASH_COMPLETE;
 	
 	FLASH_Unlock();																				//½âËø 

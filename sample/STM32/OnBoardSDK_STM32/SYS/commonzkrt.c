@@ -195,12 +195,14 @@ void generate_randcode(int len,char* buffer)
   */
 void printf_uchar(unsigned char *data, u16 length)
 {
+#ifdef LOG_PRINTF_UCHAR	
 	int i;
 	for(i=0; i < length; i++)
 	{
 		printf("0x%x ", data[i]);
 	}
 	printf("\r\n");
+#endif	
 }
 /**
   * @}

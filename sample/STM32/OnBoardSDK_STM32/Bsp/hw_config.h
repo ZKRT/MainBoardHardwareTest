@@ -24,14 +24,18 @@
 
 /** @defgroup hardware open or close control
   * @{
-  */ 
-//#define USE_IIC                 1
-#define USE_SRAM                  1
-//#define USE_CAN1                1
-//#define _TEMPTURE_IO_           1
-//#define _TEMPTURE_ADC_	        2
-#define _TEMPTURE_NONE            3
-#define USE_CAN2                  1
+  */              
+//#define _TEMPTURE_IO_           
+//#define _TEMPTURE_ADC_	        
+#define _TEMPTURE_NONE    
+#define USE_UART1_DMA
+#define USE_CAN2_FUN                  
+#define USE_LED_FUN			
+#define USE_IIC_FUN  
+//#define USE_DJI_FUN
+#define USE_USB_FUN
+#define USE_LWIP_FUN
+#define HWTEST_FUN
 /**
   * @}
   */ 

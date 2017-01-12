@@ -10,7 +10,7 @@
  * */
 
 #include "Activate.h"
-
+#include "sys.h"
 extern CoreAPI defaultAPI;
 extern CoreAPI *coreApi;
 extern Flight flight;
@@ -19,7 +19,7 @@ extern FlightData flightData;
 void
 User_Activate ()
 {
-	printf("@@@@@@@@User_Activate ()!@@@@@@@@@\n");
+	ZKRT_LOG(LOG_NOTICE,"@@@@@@@@User_Activate ()!@@@@@@@@@\n");
 	static char key_buf[65] = "ac5100a048cc4c4a08ce23200481d058d7455e69b8668fc0e49f29bd856c185a"; /*"your app_key"*/
 
 	ActivateData user_act_data;

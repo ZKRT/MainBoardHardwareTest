@@ -127,6 +127,10 @@ void tcp_server_prcs(void)
 			printf("have a tcp conncet client closed\n");
 			tcp_server_connection_close(tcpserver_sp->pcb, NULL); //释放当前关闭的连接pcb //zkrt_notice
 			tcpserver_sp->server_state = ES_TCPSERVER_ACCEPTED;
+#ifdef HWTEST_FUN				
+			sys_led_timeout = RUN_LED_NETINIT_TIMEOUT;
+			sys_led_flag = sys_led_timeout;
+#endif	
 		//zkrt_todo: error handle
 			break;
 		default:break;
@@ -250,6 +254,10 @@ err_t tcp_server_accept(void *arg,struct tcp_pcb *newpcb,err_t err)
 		tcp_sent(newpcb,tcp_server_sent);  	//初始化发送回调函数
 		ZKRT_LOG(LOG_NOTICE, "connet ip =%d.%d.%d.%d\n", (int)(newpcb->remote_ip.addr&0xff), (int)(newpcb->remote_ip.addr>>8)&0xff, (int)((newpcb->remote_ip.addr>>16)&0xff), (int)((newpcb->remote_ip.addr>>24)&0xff));
 		ret_err=ERR_OK;
+#ifdef HWTEST_FUN				
+			sys_led_timeout = RUN_LEN_CLIENT_CONC_TIMEOUT;
+			sys_led_flag = sys_led_timeout;
+#endif	
 	}
 	else 
 		ret_err=ERR_MEM;
@@ -481,7 +489,36 @@ void tcp_server_remove_timewait(void)
 		memp_free(MEMP_TCP_PCB,pcb2);	
 	}
 }
+#ifdef HWTEST_FUN			
+/**
+  * @brief  tcp_server_hwt_led_control  硬件测试的系统灯控制
+  * @retval none
+  */
+void tcp_server_hwt_led_control(void)
+{
+	u8 link_state = lwipdev.linkstatus;
+	
+	if(link_state == LINK_UP)
+	{
+		if(tcpserver_sp->server_state == ES_TCPSERVER_INIT)
+		{
+			sys_led_timeout = RUN_LED_NETINIT_TIMEOUT;
+		}
+		if(sys_led_flag < RUNLED_TIMEOUT_OFFSET)
+		{
+			sys_led_flag = sys_led_timeout;
+		}
+		
+		if(sys_led_flag == RUNLED_TIMEOUT_OFFSET)
+		{
+			sys_led_flag = sys_led_timeout;
+			_RUN_LED = ! _RUN_LED;
+		}
+	}	
+	
 
+}
+#endif
 /**
   * @}
   */ 

@@ -48,6 +48,10 @@ void lwip_prcs(void)
 		//tcp_client_prcs();
 		tcp_server_prcs();			
 	}
+	
+#ifdef HWTEST_FUN			
+	tcp_server_hwt_led_control();
+#endif	
 
 	lwip_periodic_handle(); //¹Ì¶¨µ÷ÓÃ
 }

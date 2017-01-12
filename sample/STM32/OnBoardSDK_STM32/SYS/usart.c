@@ -21,9 +21,9 @@
 #include <string.h>
 #include "usart.h"	
 #include "sbus.h"
+#include "led.h"
 
 /* Private macro -------------------------------------------------------------*/
-#define USE_UART1_DMA  1
 
 /* Private variables ---------------------------------------------------------*/
 
@@ -402,8 +402,10 @@ void DMA2_Stream7_IRQHandler(void)
 		usart1_tx_DMA();
 	
 	DMA_ClearITPendingBit(DMA2_Stream7,DMA_IT_TCIF7);
-	GPIO_ResetBits(GPIOD, GPIO_Pin_0);
-	usart1_tx_flag = TimingDelay;			
+#ifndef HWTEST_FUN		
+	_FLIGHT_UART_TX_LED = 0;
+	usart1_tx_flag = TimingDelay;
+#endif	
 }
 uint8_t usart1_rx_check(void)
 {
@@ -411,9 +413,10 @@ uint8_t usart1_rx_check(void)
 		return 0;
 	else
 	{
-//		GPIO_ResetBits(GPIOD, GPIO_Pin_1);  //zkrt_todo
+#ifndef HWTEST_FUN			
+		_FLIGHT_UART_RX_LED = 0;
 		usart1_rx_flag = TimingDelay;			
-		
+#endif
 		return 1;
 	}
 }
@@ -451,16 +454,17 @@ _sys_exit(int x)
 }
 int fputc(int ch, FILE *f)
 {
-  while (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET)
+  while (USART_GetFlagStatus(USART3, USART_FLAG_TC) == RESET)
     ;
-  USART_SendData(USART1, (unsigned char) ch);
+  USART_SendData(USART3, (unsigned char) ch);
 
   return (ch);
 }
 #endif
 
 
-//add by yanly
+////add by yanly
+//usart3
 void usart3_tx_copyed(const char *str,uint16_t len)
 {
 	uint16_t count;
@@ -546,6 +550,7 @@ uint8_t usart3_rx_byte(void)
 
 	return ch;
 }
+//usart6
 void usart6_tx_copyed(const char *str,uint16_t len)
 {
 	uint16_t count;
@@ -596,11 +601,10 @@ void DMA2_Stream6_IRQHandler(void)  //tx it
 		usart6_tx_DMA();
 	
 	DMA_ClearITPendingBit(DMA2_Stream6,DMA_IT_TCIF6);
-	
-//	GPIO_ResetBits(GPIOD, GPIO_Pin_0);
-	//zkrt_todo: led control
-//	usart1_tx_flag = TimingDelay;
-//	test_inter_count++;
+#ifndef HWTEST_FUN			
+	_433M_UART_TX_LED = 0;
+	u433m_tx_flag = TimingDelay;
+#endif	
 }
 uint8_t usart6_rx_check(void)
 {
@@ -608,10 +612,10 @@ uint8_t usart6_rx_check(void)
 		return 0;
 	else
 	{
-//		GPIO_ResetBits(GPIOD, GPIO_Pin_1);
-		//zkrt_todo: led control
-//		usart1_rx_flag = TimingDelay;			
-		
+#ifndef HWTEST_FUN		
+		_433M_UART_RX_LED = 0;
+		u433m_rx_flag = TimingDelay;
+#endif
 		return 1;
 	}
 }
@@ -629,8 +633,91 @@ uint8_t usart6_rx_byte(void)
 
 	return ch;
 }
+//uart4
+void uart4_tx_copyed(const char *str,uint16_t len)
+{
+	uint16_t count;
+	
+	for (count = 0; count < len; count++) 
+	{                                     
+		uart4_tx_buffer[uart4_tx_buffer_head]= (uint8_t)str[count];
+		
+		uart4_tx_buffer_head++;
+		if (uart4_tx_buffer_head == USART_BUFFER_SIZE)
+		{
+			uart4_tx_buffer_head = 0;
+		}
+	}
+}
+void uart4_tx_DMA(void)
+{
+	while (DMA_GetCmdStatus(DMA1_Stream4) != DISABLE)
+	{
+	}
+	
+	DMA1_Stream4->M0AR = (uint32_t)&uart4_tx_buffer[uart4_tx_buffer_tail];
+	
+	if(uart4_tx_buffer_tail < uart4_tx_buffer_head)
+	{
+		DMA_SetCurrDataCounter(DMA1_Stream4, uart4_tx_buffer_head - uart4_tx_buffer_tail);
+		uart4_tx_buffer_tail = uart4_tx_buffer_head;
+	}
+	else                    
+	{
+		DMA_SetCurrDataCounter(DMA1_Stream4, USART_BUFFER_SIZE - uart4_tx_buffer_tail);
+		uart4_tx_buffer_tail = 0;
+	}
 
-//
+	DMA_ClearFlag(DMA1_Stream4,DMA_FLAG_TCIF4);				
+	
+	DMA_Cmd(DMA1_Stream4, ENABLE);
+}
+void DMA1_Stream4_IRQHandler(void)  //tx it 
+{
+	DMA_Cmd(DMA1_Stream4, DISABLE);
+	
+	while (DMA_GetCmdStatus(DMA1_Stream4) != DISABLE)	
+	{
+	}
+	
+	if (uart4_tx_buffer_tail != uart4_tx_buffer_head)
+		uart4_tx_DMA();
+	
+	DMA_ClearITPendingBit(DMA1_Stream4,DMA_IT_TCIF4);
+	
+//	GPIO_ResetBits(GPIOD, GPIO_Pin_0);
+	//zkrt_todo: led control
+//	usart1_tx_flag = TimingDelay;
+//	test_inter_count++;
+}
+uint8_t uart4_rx_check(void)
+{
+	if (uart4_rx_buffer_pos == DMA_GetCurrDataCounter(DMA1_Stream2))
+		return 0;
+	else
+	{
+//		GPIO_ResetBits(GPIOD, GPIO_Pin_1);
+		//zkrt_todo: led control
+//		usart1_rx_flag = TimingDelay;			
+		
+		return 1;
+	}
+}
+uint8_t uart4_rx_byte(void)
+{
+	uint8_t ch;	
+	
+	ch = uart4_rx_buffer[USART_BUFFER_SIZE - uart4_rx_buffer_pos];
+	
+	uart4_rx_buffer_pos--;
+	if (uart4_rx_buffer_pos == 0)
+	{
+		uart4_rx_buffer_pos = USART_BUFFER_SIZE;
+	}
+
+	return ch;
+}
+////
 
 
 

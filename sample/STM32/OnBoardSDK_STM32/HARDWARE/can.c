@@ -27,7 +27,7 @@
 volatile uint8_t can1_rx_buff[DEVICE_NUMBER][CAN_BUFFER_SIZE];
 volatile uint16_t can1_rx_buff_store[DEVICE_NUMBER]; //数组里保存每个CAN设备接收数据的字节数，接受到数据后can1_rx_buff_store[type]++一直累加，超过CAN_BUFFER_SIZE，就置0继续累加
 uint16_t can1_rx_buff_get[DEVICE_NUMBER]; //每处理一个can1_rx_buff[type][can1_rx_buff_store[type]]，can1_rx_buff_get++累加，循环累加
-#ifdef USE_CAN2
+#ifdef USE_CAN2_FUN
 volatile uint8_t can2_rx_buff[3][CAN_BUFFER_SIZE];
 volatile uint16_t can2_rx_buff_store[3]; //数组里保存每个CAN设备接收数据的字节数，接受到数据后can1_rx_buff_store[type]++一直累加，超过CAN_BUFFER_SIZE，就置0继续累加
 uint16_t can2_rx_buff_get[3]; //每处理一个can1_rx_buff[type][can1_rx_buff_store[type]]，can1_rx_buff_get++累加，循环累加
@@ -37,7 +37,7 @@ uint16_t can2_rx_buff_get[3]; //每处理一个can1_rx_buff[type][can1_rx_buff_store[
 void can_all_init(void)
 {
 	CAN1_Mode_Init(CAN_Mode_Normal);
-#ifdef USE_CAN2	
+#ifdef USE_CAN2_FUN	
 	CAN2_Mode_Init(CAN_Mode_Normal);
 #endif
 }	
@@ -99,7 +99,7 @@ uint8_t CAN1_Mode_Init(uint8_t mode)
 	CAN_FilterInitStructure.CAN_FilterActivation=ENABLE; 
 	CAN_FilterInit(&CAN_FilterInitStructure);//滤波器初始化
 	
-#ifdef USE_CAN2		
+#ifdef USE_CAN2_FUN		
 	//配置过滤器 for can2
 	CAN_SlaveStartBank(13);  //配置can2接口起始存储区
 	CAN_FilterInitStructure.CAN_FilterNumber=13;	//起始存储区开始至最大值里选择一个  
@@ -142,7 +142,7 @@ void CAN1_RX0_IRQHandler(void)
 	}
 	
 //	GPIO_ResetBits(GPIOD, GPIO_Pin_4);   //modify by yanly
-	_CAN1_RX_LED = 0;
+	_CAN_RX_LED = 0;
 	can_rx_flag = TimingDelay;				
 }
 
@@ -198,8 +198,7 @@ uint8_t CAN1_send_msg(uint8_t* msg,uint8_t len,uint8_t id)
 	}
 //	printf("555555555555555555!\r\n");
 //	GPIO_ResetBits(GPIOD, GPIO_Pin_5);//点亮CAN_TX //modify by yanly
-	_CAN1_TX_LED = 0;
-	
+	_CAN_TX_LED = 0;
 	can_tx_flag = TimingDelay;				
 	
   return 0;//返回0成功
@@ -227,7 +226,7 @@ uint8_t CAN1_send_message_fun(uint8_t *message, uint8_t len, uint8_t id)
 	return 0;
 }
 
-#ifdef USE_CAN2	
+#ifdef USE_CAN2_FUN	
 /** @fungroup  can2 funciton  //add by yanly
   * @{
   */ 
