@@ -70,6 +70,7 @@
 
 /* ---------- ICMP选项---------- */
 #define LWIP_ICMP                 1 //使用ICMP协议
+//#define LWIP_ICMP_SENDER					1  //by yanly
 
 
 /* ---------- DHCP选项---------- */

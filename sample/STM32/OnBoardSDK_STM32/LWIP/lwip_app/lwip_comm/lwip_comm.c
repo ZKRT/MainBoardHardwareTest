@@ -145,7 +145,7 @@ u8 lwip_comm_init(void)
 	lwipdev.dhcpstatus=0;	//DHCP标记为0
 	dhcp_start(&lwip_netif);	//开启DHCP服务
 #else
-	lwipdev.dhcpstatus = 0xff; //如果不使用DHCP，标记为0xff 
+	lwipdev.dhcpstatus = 2; //如果不使用DHCP，标记为2
 #endif
 	
 	if(Netif_Init_Flag==NULL)
@@ -170,42 +170,23 @@ void lwip_pkt_handle(void)
 }
 
 u8 links_temp;
-//LWIP轮询任务
+/**
+  * @brief  lwip_periodic_handle LWIP轮询任务  //modify by yanly 170120
+  * @param  None
+  * @retval NOne
+  */
 void lwip_periodic_handle()
 {
-#if LWIP_TCP
-	//每250ms调用一次tcp_tmr()函数
-  if (lwip_localtime - TCPTimer >= TCP_TMR_INTERVAL)
-  {
-    TCPTimer =  lwip_localtime;
-    tcp_tmr();
-  }
-#endif
-  //ARP每5s周期性调用一次
-  if ((lwip_localtime - ARPTimer) >= ARP_TMR_INTERVAL)
-  {
-    ARPTimer =  lwip_localtime;
-    etharp_tmr();
-  }
-
+	sys_check_timeouts();
+	
 #if LWIP_DHCP //如果使用DHCP的话
-  //每500ms调用一次dhcp_fine_tmr()
   if (lwip_localtime - DHCPfineTimer >= DHCP_FINE_TIMER_MSECS)
   {
-    DHCPfineTimer =  lwip_localtime;
-    dhcp_fine_tmr();
     if ((lwipdev.dhcpstatus != 2)&&(lwipdev.dhcpstatus != 0XFF))
     { 
       lwip_dhcp_process_handle();  //DHCP处理
     }
   }
-
-  //每60s执行一次DHCP粗糙处理
-  if (lwip_localtime - DHCPcoarseTimer >= DHCP_COARSE_TIMER_MSECS)
-  {
-    DHCPcoarseTimer =  lwip_localtime;
-    dhcp_coarse_tmr();
-  }  
 #endif
 	//每5s监测一次linkstatus //add by yanly
 	if(lwip_localtime - check_linkstatus_timer >= 5000)
@@ -228,6 +209,64 @@ void lwip_periodic_handle()
 		}
 	}	
 }
+////LWIP轮询任务 --old
+//void lwip_periodic_handle()
+//{
+//#if LWIP_TCP
+//	//每250ms调用一次tcp_tmr()函数
+//  if (lwip_localtime - TCPTimer >= TCP_TMR_INTERVAL)
+//  {
+//    TCPTimer =  lwip_localtime;
+//    tcp_tmr();
+//  }
+//#endif
+//  //ARP每5s周期性调用一次
+//  if ((lwip_localtime - ARPTimer) >= ARP_TMR_INTERVAL)
+//  {
+//    ARPTimer =  lwip_localtime;
+//    etharp_tmr();
+//  }
+
+//#if LWIP_DHCP //如果使用DHCP的话
+//  //每500ms调用一次dhcp_fine_tmr()
+//  if (lwip_localtime - DHCPfineTimer >= DHCP_FINE_TIMER_MSECS)
+//  {
+//    DHCPfineTimer =  lwip_localtime;
+//    dhcp_fine_tmr();
+//    if ((lwipdev.dhcpstatus != 2)&&(lwipdev.dhcpstatus != 0XFF))
+//    { 
+//      lwip_dhcp_process_handle();  //DHCP处理
+//    }
+//  }
+
+//  //每60s执行一次DHCP粗糙处理
+//  if (lwip_localtime - DHCPcoarseTimer >= DHCP_COARSE_TIMER_MSECS)
+//  {
+//    DHCPcoarseTimer =  lwip_localtime;
+//    dhcp_coarse_tmr();
+//  }  
+//#endif
+//	//每5s监测一次linkstatus //add by yanly
+//	if(lwip_localtime - check_linkstatus_timer >= 5000)
+//	{
+//		check_linkstatus_timer = lwip_localtime;
+//		links_temp = LAN8720_Get_basic_link();
+//		if(links_temp!= lwipdev.linkstatus)
+//		{	
+//			printf("network link status: %d\n", links_temp);
+//			lwipdev.linkstatus = links_temp;
+//			if(links_temp == LINK_DOWN)
+//			{
+//#ifdef HWTEST_FUN				
+////				sys_led_timeout = RUN_LEN_NETINIT_NONE_TIMEOUT;
+////				sys_led_flag = sys_led_timeout;
+//				_RUN_LED = 1;
+//#endif				
+//				//zkrt_todo: 网线从link up变成link down，是否要将网络状态等信息重置
+//			}
+//		}
+//	}	
+//}
 
 
 //如果使能了DHCP

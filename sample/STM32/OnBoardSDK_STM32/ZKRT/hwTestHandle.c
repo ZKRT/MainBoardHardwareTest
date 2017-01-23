@@ -33,7 +33,7 @@
 #include "exfuns.h"
 #include "usb_usr_process.h"
 #include "tcp_server_demo.h"
-#include "24cxx.h"
+#include "bsp_eeprom_24xx.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /**
@@ -459,7 +459,7 @@ char iic_hwtf(void *in_arg, void *out_arg, u16 *out_arg_len)
 	u8 *outdata = (u8 *)out_arg;
 	ZKRT_LOG(LOG_NOTICE, "iic_hwtf\n");
 	///doing test
-	IIC_Init();
+	bsp_InitI2C();
 	//iic test
 	ret = iic_24cxx_test();
 	ZKRT_LOG(LOG_NOTICE, "iic 24cxx test, ret = 0x%x\n", ret);
@@ -855,9 +855,13 @@ char iic_24cxx_test(void)
 {
 	char ret;
 	int i;
+	char _test_send_buf[256];
+	char _test_recv_buf[256];
+	short _test_size = 256;
 	hwtest_timeout = 30; //30s
 	//check connect
-	while(AT24CXX_Check())//检测不到24c02
+//	while(AT24CXX_Check())//检测不到24c02
+	while(ee_CheckOk()==0)//检测不到24c02
 	{
 		ZKRT_LOG(LOG_ERROR, "24C02 Check Failed!\n");
 		ostmr_wait(10); //wait 1s
@@ -868,26 +872,52 @@ char iic_24cxx_test(void)
 			return ret;
 		}
 	}
-	for(i=0; i<TEST_BUFFER_SIZE; i++)
+///////write 0
+	for(i=0; i<_test_size; i++)
 	{
-		test_send_buf[i] = i;
-		test_recv_buf[i] = 0;
+		_test_send_buf[i] = 0;
+		_test_recv_buf[i] = 0xff;
 	}
 	//write
-	AT24CXX_Write(0, (u8*)test_send_buf, TEST_BUFFER_SIZE);
+	ee_WriteBytes((u8*)_test_send_buf, 0, _test_size);
+	ostmr_wait(5); //wait 500ms
 	//read
-	AT24CXX_Read(0, (u8*)test_recv_buf, TEST_BUFFER_SIZE);
+	ee_ReadBytes((u8*)_test_recv_buf, 0, _test_size);
 	//check
-	for(i=0; i<TEST_BUFFER_SIZE; i++)
+	for(i=0; i<_test_size; i++)
 	{
-		if(test_recv_buf[i] == test_send_buf[i])
+		if(_test_recv_buf[i] == _test_send_buf[i])
 		{
 			ret = RESULT_OK_HWT;
 		}
 		else
 		{
 			ret = RESULT_FAIL_HWT;
-			break;
+			return ret;
+		}	
+	}
+///////write 0~255	
+	for(i=0; i<_test_size; i++)
+	{
+		_test_send_buf[i] = i;
+		_test_recv_buf[i] = 0xff;
+	}
+	//write
+	ee_WriteBytes((u8*)_test_send_buf, 0, _test_size);
+	ostmr_wait(5); //wait 500ms
+	//read
+	ee_ReadBytes((u8*)_test_recv_buf, 0, _test_size);
+	//check
+	for(i=0; i<_test_size; i++)
+	{
+		if(_test_recv_buf[i] == _test_send_buf[i])
+		{
+			ret = RESULT_OK_HWT;
+		}
+		else
+		{
+			ret = RESULT_FAIL_HWT;
+			return ret;
 		}	
 	}
 	return ret;

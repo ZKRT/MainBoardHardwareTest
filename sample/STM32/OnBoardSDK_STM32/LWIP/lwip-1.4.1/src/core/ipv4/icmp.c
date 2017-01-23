@@ -52,6 +52,10 @@
 
 #include <string.h>
 
+/* user includes ------------------------------------------------------------------*/
+#include "ping.h" //add by yanly
+#include "sys_arch.h"
+
 /** Small optimization: set to 0 if incoming PBUF_POOL pbuf always can be
  * used to modify and send a response packet (and to 1 if this is not the case,
  * e.g. when link header is stripped of when receiving) */
@@ -101,6 +105,15 @@ icmp_input(struct pbuf *p, struct netif *inp)
 #endif /* LWIP_DEBUG */
   switch (type) {
   case ICMP_ER:
+//add by yanly		
+#ifdef LWIP_ICMP_SENDER	
+	  if(ip_current_src_addr()->addr == my_ping_config.ping_target.addr)
+		{	
+			my_ping_config.r_ping_reply_cnt++;
+			printf("time:[%ld]ms, ", (sys_now() - *(my_ping_config.ping_time)));
+			printf("send cnt:[%lld], recv cnt:[%lld], frame loss rate:[%.2f%%]\r\n", my_ping_config.s_ping_req_cnt, my_ping_config.r_ping_reply_cnt, (float)((float)my_ping_config.r_ping_reply_cnt/(float)my_ping_config.s_ping_req_cnt)*100);
+		}
+#endif		
     /* This is OK, echo reply might have been parsed by a raw PCB
        (as obviously, an echo request has been sent, too). */
     break; 

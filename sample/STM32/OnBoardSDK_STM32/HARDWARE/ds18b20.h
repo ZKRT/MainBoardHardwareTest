@@ -11,8 +11,8 @@
 #define	DS18B20_DQ_IN(num)  PAin(num)  //数据端口	PA67 --已改为PA3和PA6
 
 //DS18B20 PIN NUMBER MAPPING
-#define	DS18B20_NUM1				6  //PIN6
-#define	DS18B20_NUM2        3  //PIN3
+#define	DS18B20_NUM1				3  //PIN3
+#define	DS18B20_NUM2        6  //PIN6
    	
 uint8_t DS18B20_Init(void);			//初始化DS18B20
 short DS18B20_Get_Temp(uint8_t num);	//获取温度
