@@ -84,7 +84,7 @@ void lwip_comm_default_ip_set(__lwip_dev *lwipx)
 	lwipx->ip[0]=192;	
 	lwipx->ip[1]=168;
 	lwipx->ip[2]=1;
-	lwipx->ip[3]=156;
+	lwipx->ip[3]=199;  //zkrt_notice: Ä¬ÈÏµØÖ·199
 	//Ä¬ÈÏ×ÓÍøÑÚÂë:255.255.255.0
 	lwipx->netmask[0]=255;	
 	lwipx->netmask[1]=255;

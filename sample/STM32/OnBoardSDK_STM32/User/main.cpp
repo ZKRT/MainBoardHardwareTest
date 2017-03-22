@@ -100,7 +100,6 @@ void app_500ms_task(void)
 	}
 }
 #endif
-
 int main()
 {
 	BSPinit();
