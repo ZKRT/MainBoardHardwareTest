@@ -92,7 +92,7 @@ char sbus_test(void);
 //flash sub test
 char flash_test(void);
 //external sram sub test
-char esram_test(void);
+char esram_test(void); //zkrt_debug
 /* Private variables ---------------------------------------------------------*/
 //
 const HW_TEST_FUN hw_test_fun[] = {
@@ -1211,13 +1211,14 @@ char esram_test(void)
 	
 	//erase
 	handle_addr = 0;
-	addr_value =0;
+	addr_value =0;   
 	for(i = 0;i < IS62WV51216_SIZE/4; i++)
 	{
 		FSMC_SRAM_WriteBuffer((u8*)&addr_value, handle_addr, 4);
 		handle_addr += 4;
 	}
 	addr_value = 0xffffffff;
+	handle_addr = 0;
 	//check erase result
 	for(i = 0;i < IS62WV51216_SIZE/4; i++)
 	{
@@ -1247,7 +1248,6 @@ char esram_test(void)
 		handle_addr += 4;
 	}
 	//check write result
-//	addr_value = 0;
 	handle_addr = 0;
 	u8value = 0;
 	for(i = 0;i < IS62WV51216_SIZE; i+=4)
@@ -1262,7 +1262,6 @@ char esram_test(void)
 		}
 		u8value+=4;
 		handle_addr += 4;
-//		addr_value = 0;
 	}
 	
 	ret = RESULT_OK_HWT;

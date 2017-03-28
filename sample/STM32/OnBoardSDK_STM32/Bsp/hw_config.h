@@ -34,7 +34,7 @@
 #define USE_IIC_FUN  
 //#define USE_DJI_FUN
 #define USE_USB_FUN
-#define USE_LWIP_FUN
+#define USE_LWIP_FUN //zkrt_debug
 #define HWTEST_FUN
 /**
   * @}

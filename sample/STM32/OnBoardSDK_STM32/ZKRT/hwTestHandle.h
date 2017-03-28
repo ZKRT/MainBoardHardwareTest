@@ -74,7 +74,7 @@
 
 void hwtest_init(void);
 u8 hwtest_data_handle(u8 *buf, u16 buflen, u8 *resbuf, u16 *resbuflen);
-
+//char esram_test(void); //zkrt_debug
 #endif /* __HWTESTHANDLE_H */
 
 /**

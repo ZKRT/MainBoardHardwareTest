@@ -42,7 +42,7 @@ void BSPinit()
 	b_ostmr_init();                                         //fast timer
 	b_systmr_init();                                        //quick fast timer
 	lwip_timer_init();                                      //专为网络使用的定时器时钟
-	led_init();
+	led_init();  //zkrt_debug
 	FSMC_SRAM_Init();
 	mymem_init(SRAMIN);		                                  //初始化内部内存池
 	mymem_init(SRAMEX);		                                  //初始化外部内存池

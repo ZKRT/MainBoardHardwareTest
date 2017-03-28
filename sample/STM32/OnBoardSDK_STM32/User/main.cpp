@@ -110,6 +110,8 @@ int main()
 	lwip_prcs_init();
 #ifdef HWTEST_FUN	
 	t_ostmr_insertTask(app_500ms_task, 500, OSTMR_PERIODIC);
+//	ostmr_wait(50);
+//	esram_test(); //zkrt_debug
 #endif	
 	while(1)
 	{
