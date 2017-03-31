@@ -11,7 +11,7 @@
 
 #include "bsp.h"
 #include "main.h"
-#include "BspUsart.h"
+#include "timer.h"
 #ifdef __cplusplus
 extern "C"
 {
@@ -48,9 +48,6 @@ void BSPinit()
 	mymem_init(SRAMEX);		                                  //初始化外部内存池
 	IIC_Init();
 	STMFLASH_Init();
-#ifdef USE_DJI_FUN	
-	Usart_DJI_Config();
-#endif	
 	uart_init();
 	can_all_init();
 #ifdef _TEMPTURE_IO_

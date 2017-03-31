@@ -78,9 +78,9 @@
             <nStopB2X>0</nStopB2X>
           </BeforeMake>
           <AfterMake>
-            <RunUserProg1>0</RunUserProg1>
+            <RunUserProg1>1</RunUserProg1>
             <RunUserProg2>0</RunUserProg2>
-            <UserProg1Name></UserProg1Name>
+            <UserProg1Name>..\Project\axf2bin.BAT</UserProg1Name>
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
             <UserProg2Dos16Mode>0</UserProg2Dos16Mode>
@@ -413,46 +413,6 @@
               <FileType>8</FileType>
               <FilePath>..\User\main.cpp</FilePath>
             </File>
-            <File>
-              <FileName>cppforstm32.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\User\cppforstm32.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>Activate.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\User\Activate.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>VirtualRC.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\User\VirtualRC.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>driver.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\User\driver.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>HotPoint.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\User\HotPoint.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>Receive.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\User\Receive.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>MobileCommand.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\User\MobileCommand.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>LocalNavigation.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\User\LocalNavigation.cpp</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -464,29 +424,14 @@
               <FilePath>..\Bsp\bsp.cpp</FilePath>
             </File>
             <File>
-              <FileName>timer.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\Bsp\timer.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>BspUsart.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\Bsp\BspUsart.cpp</FilePath>
-            </File>
-            <File>
               <FileName>hw_config.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Bsp\hw_config.h</FilePath>
             </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>doc</GroupName>
-          <Files>
             <File>
-              <FileName>readme.txt</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\doc\readme.txt</FilePath>
+              <FileName>timer.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\Bsp\timer.cpp</FilePath>
             </File>
           </Files>
         </Group>
@@ -668,76 +613,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>DJIlib</GroupName>
-          <Files>
-            <File>
-              <FileName>DJI_API.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\..\..\..\lib\src\DJI_API.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>DJI_App.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\..\..\..\lib\src\DJI_App.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>DJI_Camera.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\..\..\..\lib\src\DJI_Camera.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>DJI_Codec.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\..\..\..\lib\src\DJI_Codec.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>DJI_Flight.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\..\..\..\lib\src\DJI_Flight.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>DJI_Follow.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\..\..\..\lib\src\DJI_Follow.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>DJI_HardDriver.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\..\..\..\lib\src\DJI_HardDriver.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>DJI_HotPoint.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\..\..\..\lib\src\DJI_HotPoint.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>DJI_Link.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\..\..\..\lib\src\DJI_Link.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>DJI_Memory.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\..\..\..\lib\src\DJI_Memory.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>DJI_Mission.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\..\..\..\lib\src\DJI_Mission.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>DJI_VirtualRC.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\..\..\..\lib\src\DJI_VirtualRC.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>DJI_WayPoint.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\..\..\..\lib\src\DJI_WayPoint.cpp</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>SYS</GroupName>
           <Files>
             <File>
@@ -861,26 +736,6 @@
               <FilePath>..\HARDWARE\sbus.h</FilePath>
             </File>
             <File>
-              <FileName>bat.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HARDWARE\bat.c</FilePath>
-            </File>
-            <File>
-              <FileName>bat.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\HARDWARE\bat.h</FilePath>
-            </File>
-            <File>
-              <FileName>app.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HARDWARE\app.c</FilePath>
-            </File>
-            <File>
-              <FileName>app.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\HARDWARE\app.h</FilePath>
-            </File>
-            <File>
               <FileName>lan8720.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\ETHERNET\lan8720.c</FilePath>
@@ -943,118 +798,8 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>MAVLINK</GroupName>
-          <Files>
-            <File>
-              <FileName>mavlink.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\MAVLINK\mavlink.c</FilePath>
-            </File>
-            <File>
-              <FileName>mavlink.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\MAVLINK\mavlink.h</FilePath>
-            </File>
-            <File>
-              <FileName>mavlink_msg_heartbeat.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\MAVLINK\mavlink_msg_heartbeat.c</FilePath>
-            </File>
-            <File>
-              <FileName>mavlink_msg_heartbeat.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\MAVLINK\mavlink_msg_heartbeat.h</FilePath>
-            </File>
-            <File>
-              <FileName>mavlink_msg_management_module.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\MAVLINK\mavlink_msg_management_module.c</FilePath>
-            </File>
-            <File>
-              <FileName>mavlink_msg_management_module.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\MAVLINK\mavlink_msg_management_module.h</FilePath>
-            </File>
-            <File>
-              <FileName>mavlink_msg_smartbat_text.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\MAVLINK\mavlink_msg_smartbat_text.c</FilePath>
-            </File>
-            <File>
-              <FileName>mavlink_msg_smartbat_text.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\MAVLINK\mavlink_msg_smartbat_text.h</FilePath>
-            </File>
-            <File>
-              <FileName>mavlink_msg_statustext .c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\MAVLINK\mavlink_msg_statustext .c</FilePath>
-            </File>
-            <File>
-              <FileName>mavlink_msg_statustext.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\MAVLINK\mavlink_msg_statustext.h</FilePath>
-            </File>
-            <File>
-              <FileName>mavlink_msg_statustext-ref.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\MAVLINK\mavlink_msg_statustext-ref.h</FilePath>
-            </File>
-            <File>
-              <FileName>mavlink_types.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\MAVLINK\mavlink_types.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>ZKRT</GroupName>
           <Files>
-            <File>
-              <FileName>zkrt.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\ZKRT\zkrt.c</FilePath>
-            </File>
-            <File>
-              <FileName>zkrt.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\ZKRT\zkrt.h</FilePath>
-            </File>
-            <File>
-              <FileName>djiapp.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\ZKRT\djiapp.c</FilePath>
-            </File>
-            <File>
-              <FileName>djiapp.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\ZKRT\djiapp.h</FilePath>
-            </File>
-            <File>
-              <FileName>heart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\ZKRT\heart.c</FilePath>
-            </File>
-            <File>
-              <FileName>heart.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\ZKRT\heart.h</FilePath>
-            </File>
-            <File>
-              <FileName>tempture.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\ZKRT\tempture.c</FilePath>
-            </File>
-            <File>
-              <FileName>tempture.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\ZKRT\tempture.h</FilePath>
-            </File>
-            <File>
-              <FileName>mobileDataHandle.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\ZKRT\mobileDataHandle.c</FilePath>
-            </File>
             <File>
               <FileName>hwTestHandle.c</FileName>
               <FileType>1</FileType>

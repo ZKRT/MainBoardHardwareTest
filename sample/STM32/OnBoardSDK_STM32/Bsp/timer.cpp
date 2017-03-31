@@ -11,16 +11,9 @@
 
 
 #include "timer.h"
-#include "DJI_VirtualRC.h"
 #include "main.h"
 
 uint32_t tick = 0; //tick is the time stamp,which record how many ms since u initialize the system.
-extern VirtualRC virtualrc;
-extern VirtualRCData myVRCdata;
-extern FlightData flightData;
-extern Flight flight;
-//extern unsigned char Rx_buff[];
-extern TerminalCommand myTerminal;
 
 void Timer1Config()
 {
@@ -99,39 +92,6 @@ extern "C"
 {
 #endif //__cplusplus
 
-//void SysTick_Handler(void)
-//{
-//  if (tick > 4233600000ll)  //49 days non-reset would cost a tick reset.
-//  {
- //   tick = 0;
- // }
- // tick++;
-//}
-void TIM1_UP_TIM10_IRQHandler(void)
-{
-  if (TIM_GetITStatus(TIM1, TIM_IT_Update) == SET)
-  {
-    virtualrc.sendData(myVRCdata);//TIM_Cmd(TIM1, DISABLE); 目前代码里定时没跑，故不会运行到这里, DJI例程是在用户串口里接收到命令后才开定时  //yanly
-  }
-  TIM_ClearFlag(TIM1, TIM_FLAG_Update);
-}
-
-//modify by yanly
-//void TIM2_IRQHandler()
-//{
-//  if (TIM_GetITStatus(TIM2, TIM_IT_Update) == SET)
-//  {
-//    if ((myTerminal.cmdIn[2] == 0x04) && (myTerminal.cmdIn[3] == 0x01))
-//    {
-//      flight.setFlight(&flightData);
-//    }
-//    else
-//    {
-//      TIM_Cmd(TIM2, DISABLE);
-//    }
-//  }
-//  TIM_ClearFlag(TIM2, TIM_FLAG_Update);
-//}
 #ifdef __cplusplus
 }
 #endif //__cplusplus
